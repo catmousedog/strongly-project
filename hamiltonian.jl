@@ -36,8 +36,6 @@ function hamiltonian()
     H = mapfoldl(+, 1:N) do i
         local_hamiltonian(i)
     end
-    println(H)
-
     return H
 end
 
