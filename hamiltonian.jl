@@ -1,7 +1,11 @@
-using MPSKit, TensorKit, TensorOperations, MPSKitModels
 
+module hamiltonian
 
-function hamiltonian(eltype=ComplexF64, symmetry=ℤ{1}, lattice=InfiniteChain(1); J=1.0, θ=0.0, spin=1 // 2)
+export AKLT_hamiltonian
+
+using MPSKitModels, MPSKit, TensorKit, TensorOperations
+
+function AKLT_hamiltonian(eltype=ComplexF64, symmetry=ℤ{1}, lattice=InfiniteChain(1); J=1.0, θ=0.0, spin=1)
     XX = sigma_xx(eltype, symmetry; spin=spin)
     YY = sigma_yy(eltype, symmetry; spin=spin)
     ZZ = sigma_zz(eltype, symmetry; spin=spin)
@@ -9,10 +13,4 @@ function hamiltonian(eltype=ComplexF64, symmetry=ℤ{1}, lattice=InfiniteChain(1
                        for (i, j) in nearest_neighbours(lattice))
 end
 
-N=4
-
-H = hamiltonian(J=1.0, θ=0.0)
-Ψ = FiniteMPS(randn, ComplexF64, N, ℂ^2, ℂ^10)
-Ψ, envs, δ = find_groundstate(Ψ, H, DMRG())
-E = sum(expectation_value(Ψ, H))
-println(E)
+end
