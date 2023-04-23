@@ -1,46 +1,18 @@
-using MPSKit, TensorKit, TensorOperations, LinearAlgebra
+using MPSKit, TensorKit, TensorOperations, MPSKitModels
 
-J = 1.0
-θ = 0.0
-c = cos(θ)
-s = sin(θ)
-N = 3
-@assert N > 1
 
-σx = TensorMap(zeros, ComplexF64, ℂ^2 ← ℂ^2)
-σx[2, 1] = 1
-σx[1, 2] = 1
-σy = TensorMap(zeros, ComplexF64, ℂ^2 ← ℂ^2)
-σy[1, 2] = -im
-σy[2, 1] = im
-σz = TensorMap(zeros, ComplexF64, ℂ^2 ← ℂ^2)
-σz[1, 1] = 1
-σz[2, 2] = -1
-
-# ℂ^2 ← ℂ^2 operator that acts on site i
-function on_site(operator, i::Int64)
-    return mapfoldl(⊗, 1:N) do j
-        j == i ? operator : id(ℂ^2)
-    end
+function hamiltonian(eltype=ComplexF64, symmetry=ℤ{1}, lattice=InfiniteChain(1); J=1.0, θ=0.0, spin=1 // 2)
+    XX = sigma_xx(eltype, symmetry; spin=spin)
+    YY = sigma_yy(eltype, symmetry; spin=spin)
+    ZZ = sigma_zz(eltype, symmetry; spin=spin)
+    return @mpoham sum(J * (cos(θ) * (XX{i,j} + YY{i,j} + ZZ{i,j}) + sin(θ) * (XX{i,j} * XX{i,j} + YY{i,j} * YY{i,j} + ZZ{i,j} * ZZ{i,j}))
+                       for (i, j) in nearest_neighbours(lattice))
 end
 
-function local_hamiltonian(i::Int64)
-    # periodic boundary conditions
-    i_next = (i % N) + 1
-    # interaction term
-    h_int = on_site(σx, i) * on_site(σx, i_next) + on_site(σy, i) * on_site(σy, i_next) + on_site(σz, i) * on_site(σz, i_next)
-    return J * h_int
-end
+N=4
 
-function hamiltonian()
-    H = mapfoldl(+, 1:N) do i
-        local_hamiltonian(i)
-    end
-    return H
-end
-
-H = hamiltonian()
-Ψ = FiniteMPS(randn, ComplexF64, N, (ℂ^2)^N, ℂ^10)
-Ψ, envs, δ = find_groundstate(Ψ, H, Dmrg())
+H = hamiltonian(J=1.0, θ=0.0)
+Ψ = FiniteMPS(randn, ComplexF64, N, ℂ^2, ℂ^10)
+Ψ, envs, δ = find_groundstate(Ψ, H, DMRG())
 E = sum(expectation_value(Ψ, H))
 println(E)
