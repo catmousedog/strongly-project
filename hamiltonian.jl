@@ -19,6 +19,8 @@ function optimize_finite_groundstate(H; N=2, spin=1, max_bond::Int64=10)
 end
 
 function optimize_infinite_groundstate(H; spin=1, max_bond::Int64=10)
+    @assert spin >= 1
+
     Ψ = InfiniteMPS(2 * spin + 1, max_bond)
     Ψ, envs, δ = find_groundstate(Ψ, H, VUMPS())
     return Ψ
