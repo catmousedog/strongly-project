@@ -15,7 +15,7 @@ function optimize_groundstate(; N=2, spin=1, J=0.5, θ=0.0, max_bond::Int64=10, 
 
     H = bilinear_biquadratic_hamiltonian(spin=spin, J=J, θ=θ)
 
-    if (N == Inf) #could do this with a different function too
+    if (N == Inf)
         Ψ = InfiniteMPS(ℂ^Int(2 * spin + 1), ℂ^(max_bond))
 
         if (isnothing(maxiter))
