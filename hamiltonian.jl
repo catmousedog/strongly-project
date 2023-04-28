@@ -10,7 +10,7 @@ function bilinear_biquadratic_hamiltonian(lattice=InfiniteChain(1); spin=1, J=1.
     return @mpoham sum(J * (cos(θ) * SS{i,j} + sin(θ) * SS{i,j} * SS{i,j}) for (i, j) in nearest_neighbours(lattice))
 end
 
-function optimize_groundstate(; N=2, spin=1, J=0.5, θ=0.0, max_bond::Int64=10, maxiter::Int64=nothing)
+function optimize_groundstate(; N=2, spin=1, J=0.5, θ=0.0, max_bond::Int64=10, maxiter::Int64=100)
     @assert N > 1
 
     H = bilinear_biquadratic_hamiltonian(spin=spin, J=J, θ=θ)
@@ -18,21 +18,13 @@ function optimize_groundstate(; N=2, spin=1, J=0.5, θ=0.0, max_bond::Int64=10, 
     if (N == Inf)
         Ψ = InfiniteMPS(ℂ^Int(2 * spin + 1), ℂ^(max_bond))
 
-        if (isnothing(maxiter))
-            algorithm = VUMPS()
-        else
-            algorithm = VUMPS(maxiter=maxiter)
-        end
+        algorithm = VUMPS(maxiter=maxiter)
 
         Ψ, envs, δ = find_groundstate(Ψ, H, algorithm)
     else
         Ψ = FiniteMPS(randn, ComplexF64, N, ℂ^Int(2 * spin + 1), ℂ^max_bond)
         
-        if (isnothing(maxiter))
-            algorithm = DMRG()
-        else
-            algorithm = DMRG(maxiter=maxiter)
-        end
+        algorithm = DMRG(maxiter=maxiter)
 
         Ψ, envs, δ = find_groundstate(Ψ, H, algorithm)
     end
