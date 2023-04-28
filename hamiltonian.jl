@@ -1,7 +1,7 @@
 
 module hamiltonian
 
-export bilinear_biquadratic_hamiltonian, optimize_finite_groundstate, optimize_infinite_groundstate
+export bilinear_biquadratic_hamiltonian, optimize_groundstate
 
 using MPSKitModels, MPSKit, TensorKit, TensorOperations
 
@@ -10,19 +10,33 @@ function bilinear_biquadratic_hamiltonian(lattice=InfiniteChain(1); spin=1, J=1.
     return @mpoham sum(J * (cos(θ) * SS{i,j} + sin(θ) * SS{i,j} * SS{i,j}) for (i, j) in nearest_neighbours(lattice))
 end
 
-function optimize_finite_groundstate(H; N=2, spin=1, max_bond::Int64=10)
+function optimize_groundstate(; N=2, spin=1, J=0.5, θ=0.0, max_bond::Int64=10, maxiter::Int64=nothing)
     @assert N > 1
 
-    Ψ = FiniteMPS(randn, ComplexF64, N, ℂ^Int(2 * spin + 1), ℂ^max_bond)
-    Ψ, envs, δ = find_groundstate(Ψ, H, DMRG())
-    return Ψ
-end
+    H = bilinear_biquadratic_hamiltonian(spin=spin, J=J, θ=θ)
 
-function optimize_infinite_groundstate(H; spin=1, max_bond::Int64=10)
-    @assert spin >= 1
+    if (N == Inf) #could do this with a different function too
+        Ψ = InfiniteMPS(ℂ^Int(2 * spin + 1), ℂ^(max_bond))
 
-    Ψ = InfiniteMPS(2 * spin + 1, max_bond)
-    Ψ, envs, δ = find_groundstate(Ψ, H, VUMPS())
+        if (isnothing(maxiter))
+            algorithm = VUMPS()
+        else
+            algorithm = VUMPS(maxiter=maxiter)
+        end
+
+        Ψ, envs, δ = find_groundstate(Ψ, H, algorithm)
+    else
+        Ψ = FiniteMPS(randn, ComplexF64, N, ℂ^Int(2 * spin + 1), ℂ^max_bond)
+        
+        if (isnothing(maxiter))
+            algorithm = DMRG()
+        else
+            algorithm = DMRG(maxiter=maxiter)
+        end
+
+        Ψ, envs, δ = find_groundstate(Ψ, H, algorithm)
+    end
+
     return Ψ
 end
 
