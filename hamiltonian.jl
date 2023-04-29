@@ -1,8 +1,3 @@
-
-module hamiltonian
-
-export bilinear_biquadratic_hamiltonian, optimize_groundstate
-
 using MPSKitModels, MPSKit, TensorKit, TensorOperations
 
 function bilinear_biquadratic_hamiltonian(lattice=InfiniteChain(1); spin=1, J=1.0, θ=0.0)
@@ -30,6 +25,4 @@ function optimize_groundstate(; N=2, spin=1, J=0.5, θ=0.0, max_bond::Int64=10, 
     end
 
     return Ψ
-end
-
 end
