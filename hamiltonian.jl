@@ -1,5 +1,3 @@
-using MPSKitModels, MPSKit, TensorKit, TensorOperations
-
 function bilinear_biquadratic_hamiltonian(lattice=InfiniteChain(1); spin=1, J=1.0, θ=0.0)
     SS = sigma_exchange(ComplexF64, ℤ{1}; spin=spin)
     return @mpoham sum(J * (cos(θ) * SS{i,j} + sin(θ) * SS{i,j} * SS{i,j}) for (i, j) in nearest_neighbours(lattice))
