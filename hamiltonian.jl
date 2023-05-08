@@ -12,17 +12,12 @@ function optimize_groundstate(; N=2, spin=1, J=0.5, θ=0.0, bond::Int64=10, maxi
 
     if (N == Inf)
         Ψ = InfiniteMPS(ℂ^Int(2 * spin + 1), ℂ^(bond))
-
         algorithm = VUMPS(maxiter=maxiter)
-
-        Ψ, envs, δ = find_groundstate(Ψ, H, algorithm)
     else
         Ψ = FiniteMPS(randn, ComplexF64, N, ℂ^Int(2 * spin + 1), ℂ^bond)
-        
         algorithm = DMRG(maxiter=maxiter)
-
-        Ψ, envs, δ = find_groundstate(Ψ, H, algorithm)
     end
+    Ψ, envs, δ = find_groundstate(Ψ, H, algorithm)
 
     return Ψ
 end
