@@ -37,7 +37,7 @@ function spectrum_approach(θ_range; spin=1, bond=12, maxiter=500, digits=4)
     spectra = Array{Float64}(undef, steps, bond)
 
     spectra[1, :] = plot_entanglement(;spin=spin, θ=θ_range[1], bond=bond, maxiter=maxiter, color=RGB(0., 0., 0.), 
-    label="θ=$(round(θ_range[1], digits=digits))", title="θ=[$(round(θ_range[1], digits=digits)), $(round(last(θ_range), digits=digits)))")
+    label="θ=$(round(θ_range[1], digits=digits))", title="θ=[$(round(θ_range[1], digits=digits)), $(round(last(θ_range), digits=digits))]")
 
     for (i, θ) in enumerate(θ_range[2:steps])
         c = i / (steps-1) * 0.9
