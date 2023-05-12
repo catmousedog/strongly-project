@@ -1,15 +1,14 @@
 using MPSKitModels, MPSKit, TensorKit, TensorOperations, Plots
 
 include("hamiltonian.jl")
+include("groundstate.jl")
 include("plot_spectrum.jl")
 
 using Logging
 disable_logging(LogLevel(Info))
 
 
-
-θ_range = linrange(0, atan(1/3), 10; endpoint=false)
-
-spectra = spectrum_approach(θ_range, spin=1, bond=12)
-
-schmidt_range(θ_range, spectra, 4)
+# ham_p = bilinear_biquadratic_hamiltonian_perturbed(spin=1, θ=0, g=0.2)
+# Ψ_p = optimize_groundstate(ham_p, bond=12, maxiter=500)
+# entanglementplot(Ψ_p)
+# display(current())
