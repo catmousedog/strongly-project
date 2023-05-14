@@ -47,3 +47,7 @@ Plot the change of the schmidt value χ as theta changes
 function plot_schmidt_range(θ_range, spectra, χ)
     scatter(θ_range, spectra[:, χ], yscale=:log10, xlabel="θ", ylabel="Schmidt coefficient $(χ)", legend=false, color=:black)
 end
+
+function plot_correlations(θ_range, correlations)
+    scatter(θ_range, correlations, yscale=:log10, xlabel="θ", ylabel="correlation lengths", legend=false, color=:black)
+end

@@ -26,12 +26,11 @@ function bilinear_biquadratic_θ_range(θ_range; spin=1, J=1.0, bond::Int64=12, 
 end
 
 "
-Calculate spectrum of one or multiple InfiniteMPS
-for just 1 state this is the same as entanglement_spectrum()
+Calculate spectrum for multiple InfiniteMPS
 "
-function entanglement_spectra(Ψ_list, bond) 
+function entanglement_spectra(Ψ_list)
     spectra = nothing
-    for (i, Ψ) in enumerate(Ψ_list) 
+    for (i, Ψ) in enumerate(Ψ_list)
         if i == 1 # don't know how to get bond dimension from InfiniteMPS so have to do this
             spectrum = entanglement_spectrum(Ψ)
             spectra = zeros(length(Ψ_list), length(spectrum))
@@ -42,3 +41,8 @@ function entanglement_spectra(Ψ_list, bond)
     end
     return spectra
 end
+
+function correlation_lengths(Ψ_list)
+    return [correlation_length(Ψ) for Ψ in Ψ_list]
+end
+
