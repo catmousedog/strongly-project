@@ -26,6 +26,18 @@ function bilinear_biquadratic_θ_range(θ_range; spin=1, J=1.0, bond::Int64=12, 
 end
 
 "
+Give the ground state of the petrurbed hamiltonian H for each g in g_range
+"
+function perturbation_range(H_perturbed, g_range; spin=1, J=1.0, bond::Int64=12, maxiter::Int64=100)
+    return [
+        begin
+            ham = H_perturbed(spin=spin, J=J, g=g)
+            optimize_groundstate(ham, bond=bond, maxiter=maxiter)
+        end for g in g_range
+    ]
+end
+
+"
 Calculate spectrum for multiple InfiniteMPS
 "
 function entanglement_spectra(Ψ_list)
