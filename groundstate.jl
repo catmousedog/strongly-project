@@ -25,6 +25,17 @@ function bilinear_biquadratic_θ_range(θ_range; spin=1, J=1.0, bond::Int64=12, 
     ]
 end
 
+
+function correlation_bond_range(bond_range, ham, maxiter::Int64=500)
+    return [
+        begin
+            Ψ = optimize_groundstate(ham, bond=bond, maxiter=maxiter)
+            correlation_length(Ψ)
+        end for bond in bond_range
+    ]
+end
+
+
 "
 Give the ground state of the petrurbed hamiltonian H for each g in g_range
 "
@@ -57,4 +68,3 @@ end
 function correlation_lengths(Ψ_list)
     return [correlation_length(Ψ) for Ψ in Ψ_list]
 end
-
