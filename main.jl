@@ -8,8 +8,8 @@ include("plot_spectrum.jl")
 # disable_logging(LogLevel(Info))
 
 
-HAFM = HAFM_staggered()
-Ψ_HAFM = optimize_groundstate(HAFM, bond=12, maxiter=500)
+H = HAFM_staggered(spin=1, J=1.0, g=0.01)
+Ψ_HAFM = optimize_groundstate(H, bond=12, maxiter=500)
 spectrum_HAFM = entanglement_spectrum(Ψ_HAFM)
 plot_entanglement(spectrum_HAFM)
 display(current())
