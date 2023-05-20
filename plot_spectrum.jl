@@ -15,26 +15,26 @@ function plot_entanglement(spectrum; clear=true, color=:blue, label=nothing, tit
 end
 
 "
-Plots all spectra uses θ_range for labels and title
+Plots all spectra uses range for labels and title
 "
-function plot_spectra(θ_range, spectra; digits=4)
-    steps = length(θ_range)
+function plot_spectra(range, range_name, spectra; digits=4)
+    steps = length(range)
 
     for i in 1:steps
-        θ = θ_range[i]
+        x = range[i]
         spectrum = spectra[i, :]
 
         c = i / steps * 0.9
         color = RGB(c, c, c)
 
         if i == 1
-            plot_entanglement(spectrum, color=color, label="θ=$(round(θ, digits=digits))", clear=true)
+            plot_entanglement(spectrum, color=color, label="$(range_name)=$(round(x, digits=digits))", clear=true)
         elseif i == steps
-            plot_entanglement(spectrum, color=color, label="θ=$(round(θ, digits=digits))", clear=false)
+            plot_entanglement(spectrum, color=color, label="$(range_name)=$(round(x, digits=digits))", clear=false)
         else
             plot_entanglement(spectrum, color=color, clear=false)
         end
     end
 
-    title!("θ=[$(round(θ_range[1], digits=digits)), $(round(last(θ_range), digits=digits))]")
+    title!("$(range_name)=[$(round(range[1], digits=digits)), $(round(last(range), digits=digits))]")
 end

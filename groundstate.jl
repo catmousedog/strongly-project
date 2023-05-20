@@ -1,6 +1,7 @@
 
 function optimize_groundstate(ham; bond::Int64=12, maxiter::Int64=100)
-    Ψ = InfiniteMPS(ℂ^Int(2 * ham.spin + 1), ℂ^(bond))
+    data = fill(TensorMap(rand,ComplexF64,ℂ^bond*ℂ^Int(2 * ham.spin + 1),ℂ^bond), ham.unit_cells);
+    Ψ = InfiniteMPS(data);
     Ψ, = find_groundstate(Ψ, ham.H, VUMPS(maxiter=maxiter))
     return Ψ
 end
@@ -25,7 +26,9 @@ function bilinear_biquadratic_θ_range(θ_range; spin=1, J=1.0, bond::Int64=12, 
     ]
 end
 
-
+"
+Give the ground state for a given hamiltonian 'ham' for each bond in bond_range
+"
 function correlation_bond_range(bond_range, ham, maxiter::Int64=500)
     return [
         begin
