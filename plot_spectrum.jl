@@ -7,9 +7,11 @@ function plot_entanglement(spectrum; clear=true, color=:blue, label=nothing, tit
     if clear
         hline([1], color=:black, linewidth=1, linestyle=:dash, label=nothing, title=title)
     end
-
-    scatter!(spectrum, yscale=:log10, xlabel="χ", ylabel="Schmidt coefficients",
-        legend=true, label=label, xticks=1:length(spectrum), color=color)
+    ticks = logticks(spectrum)
+    scatter!(spectrum, yscale=:log10, xlabel="χ", ylabel="Schmidt coefficients", legend=true, label=label, color=color)
+    xticks!(1:length(spectrum))
+    yticks!(ticks)
+    ylims!(ticks[1], last(ticks))
 
     return spectrum
 end
@@ -36,5 +38,15 @@ function plot_spectra(range, range_name, spectra; digits=4)
         end
     end
 
-    title!("$(range_name)=[$(round(range[1], digits=digits)), $(round(last(range), digits=digits))]")
+    title!("Entanglement Spectra for $(range_name)∈[$(round(range[1], digits=digits)), $(round(last(range), digits=digits))]")
+
+end
+
+
+function plot_correlations(range, range_name, correlations)
+    scatter(range, correlations, yscale=:log10, xlabel=range_name, ylabel="ξ", legend=false, color=:black)
+
+    ticks = logticks(correlations)
+    yticks!(ticks) 
+    ylims!((ticks[1], last(ticks)))
 end

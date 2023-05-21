@@ -14,6 +14,15 @@ function linrange(start, stop, steps; endpoint=true)
     return l
 end
 
+function logticks(sequence)
+    min_val = minimum(sequence)
+    max_val = maximum(sequence)
+    min_log = floor(log10(min_val))
+    max_log = ceil(log10(max_val))
+    ticks = [10.0^i for i in min_log:max_log]
+    return ticks
+end
+
 "
 Give the ground states of the bilinear_biquadratic_hamiltonian for each θ in θ_range
 "
@@ -29,7 +38,7 @@ end
 "
 Give the ground state for a given hamiltonian 'ham' for each bond in bond_range
 "
-function correlation_bond_range(bond_range, ham, maxiter::Int64=500)
+function correlation_bond_range(bond_range, ham; maxiter::Int64=500)
     return [
         begin
             Ψ = optimize_groundstate(ham, bond=bond, maxiter=maxiter)
